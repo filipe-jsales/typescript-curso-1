@@ -1,3 +1,4 @@
+import { DiasDaSemana } from "../enums/dias-da-semana.js";
 import { Negociacao } from "../models/negociacao.js";
 import { Negociacoes } from "../models/negociacoes.js";
 import { MensagemView } from "../views/mensagem-view.js";
@@ -14,9 +15,18 @@ export class NegociacaoController {
     }
     adiciona() {
         const negociacao = this.criaNegociacao();
+        //validando dia da semana 
+        if (!this.isDiaUtil(negociacao.data)) {
+            this.mensagemView.update("Transações não são permitidas final de semana");
+            return;
+        }
+        console.log('Dia da semana: ', negociacao.data.getDay());
         this.negociacoes.adiciona(negociacao);
         this.atualizaView();
         this.limparFormulario();
+    }
+    isDiaUtil(data) {
+        return data.getDay() > DiasDaSemana.DOMINGO && data.getDay() < DiasDaSemana.SABADO;
     }
     criaNegociacao() {
         const exp = /-/g;
