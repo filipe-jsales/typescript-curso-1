@@ -9,6 +9,7 @@ export class NegociacaoController {
         this.negociacoesView = new NegociacoesView('#negociacoesView');
         this.mensagemView = new MensagemView('#mensagemView');
         this.inputData = document.querySelector("#data");
+        console.log(this.inputData);
         this.inputQuantidade = document.querySelector("#quantidade");
         this.inputValor = document.querySelector("#valor");
         this.negociacoesView.update(this.negociacoes);
