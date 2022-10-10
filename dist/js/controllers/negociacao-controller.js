@@ -15,7 +15,6 @@ export class NegociacaoController {
     }
     adiciona() {
         const negociacao = Negociacao.criaNegociacao(this.inputData.value, this.inputQuantidade.value, this.inputValor.value);
-        //validando dia da semana 
         if (!this.isDiaUtil(negociacao.data)) {
             this.mensagemView.update("Transações não são permitidas final de semana");
             return;

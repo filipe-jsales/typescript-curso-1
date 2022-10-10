@@ -5,6 +5,9 @@ export abstract class View<T> {
 
     constructor(seletor: string,  escapar?: boolean) {
         this.elemento = document.querySelector(seletor);
+        if (escapar){
+            this.escapar = escapar; 
+        }
     }
 
     public update(model: T): void {
