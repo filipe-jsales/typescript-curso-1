@@ -30,6 +30,21 @@ export class NegociacaoController {
         this.limparFormulario();
         this.atualizaView();
     }
+    importarDados() {
+        fetch('http://localhost:8080/dados')
+            .then(res => res.json())
+            .then((dados) => {
+            return dados.map(dado => {
+                return new Negociacao(new Date(), dado.vezes, dado.montante);
+            });
+        })
+            .then(negociacoesDeHoje => {
+            for (let negociacao of negociacoesDeHoje) {
+                this.negociacoes.adiciona(negociacao);
+            }
+            this.negociacoesView.update(this.negociacoes);
+        });
+    }
     ehDiaUtil(data) {
         return data.getDay() > DiasDaSemana.DOMINGO
             && data.getDay() < DiasDaSemana.SABADO;
@@ -46,15 +61,15 @@ export class NegociacaoController {
     }
 }
 __decorate([
-    domInjector("#data")
+    domInjector('#data')
 ], NegociacaoController.prototype, "inputData", void 0);
 __decorate([
-    domInjector("#quantidade")
+    domInjector('#quantidade')
 ], NegociacaoController.prototype, "inputQuantidade", void 0);
 __decorate([
-    domInjector("#valor")
+    domInjector('#valor')
 ], NegociacaoController.prototype, "inputValor", void 0);
 __decorate([
-    inspect(),
+    inspect,
     logarTempoDeExecucao()
 ], NegociacaoController.prototype, "adiciona", null);
