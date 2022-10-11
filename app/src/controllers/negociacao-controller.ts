@@ -6,7 +6,8 @@ import { Negociacao } from '../models/negociacao.js';
 import { Negociacoes } from '../models/negociacoes.js';
 import { MensagemView } from '../views/mensagem-view.js';
 import { NegociacoesView } from '../views/negociacoes-view.js';
-import { NegociacoesDoDia } from '../interfaces/negociacao-do-dia.js';
+import { NegociacoesService } from '../services/negociacoes-service.js';
+import { imprimir } from '../utils/imprimir.js';
 
 export class NegociacaoController {
     @domInjector('#data')
@@ -18,6 +19,7 @@ export class NegociacaoController {
     private negociacoes = new Negociacoes();
     private negociacoesView = new NegociacoesView('#negociacoesView');
     private mensagemView = new MensagemView('#mensagemView');
+    private negociacoesService = new NegociacoesService();
 
     constructor() {
         this.negociacoesView.update(this.negociacoes);
@@ -40,29 +42,19 @@ export class NegociacaoController {
                 .update('Apenas negociações em dias úteis são aceitas');
             return ;
         }
-
         this.negociacoes.adiciona(negociacao);
+        imprimir(negociacao);
         this.limparFormulario();
         this.atualizaView();
     }
     public importarDados(): void{
-        fetch('http://localhost:8080/dados')
-            .then(res => res.json())
-            .then((dados: NegociacoesDoDia[]) => {
-                return dados.map(dado =>{
-                    return new Negociacao(
-                        new Date(), 
-                        dado.vezes, 
-                        dado.montante
-                    )
-                });
-            })
-            .then(negociacoesDeHoje =>{
-                for(let negociacao of negociacoesDeHoje){
-                    this.negociacoes.adiciona(negociacao);
-                }
-                this.negociacoesView.update(this.negociacoes);
-            })
+        this.negociacoesService.obterNegociacoesDoDia()
+        .then(negociacoesDeHoje =>{
+            for(let negociacao of negociacoesDeHoje){
+                this.negociacoes.adiciona(negociacao);
+            }
+            this.negociacoesView.update(this.negociacoes);
+        })
     }
     private ehDiaUtil(data: Date) {
         return data.getDay() > DiasDaSemana.DOMINGO 
